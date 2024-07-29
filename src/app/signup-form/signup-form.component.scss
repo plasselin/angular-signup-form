@@ -1,0 +1,103 @@
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  border: 1px solid #42474e;
+  -webkit-text-:autofill-color #e0e2e8;
+  -webkit-text-fill-color: #e0e2e8;
+  -webkit-box-shadow: 0 0 0px 1000px #42474e inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+--mdc-linear-progress__bar-inner{
+  bordercolor: --step0;
+}
+
+.button-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.button-row.centered {
+  justify-content: center;
+}
+
+.flex-container {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.button-container {
+  display: flex;
+  justify-content:  center;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-bottom: 8px;
+}
+
+mat-card {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.topField {
+  padding-top: 8px;
+}
+
+mat-hint {
+  color: #0dcaf0;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 20px;
+}
+
+.error-message {
+  font-size: 14px;
+  color: #f44336;
+  margin-top: 4px;
+  display: block;
+  height: fit-content;
+  padding: 4px;
+
+  @media (max-width: 600px) {
+    font-size: 12px;
+  }
+
+  @media (min-width: 601px) and (max-width: 1024px) {
+    font-size: 13px;
+  }
+
+  @media (min-width: 1025px) {
+    font-size: 14px;
+  }
+}
+
+mat-form-field {
+  width: 100%;
+  margin-bottom: 1rem;
+  font-family: JetBrains Mono, monospace;
+  font-size: 12px;
+  font-style: normal;
+  color: #e0e2e8;
+  position: relative;
+
+  mat-error {
+    display: inline-block;
+    width: fit-content;
+    padding: 4px;
+  }
+}
+

@@ -1,0 +1,135 @@
+<mat-card>
+
+  <mat-horizontal-stepper [linear]="true" #stepper>
+    <mat-step label="Personal Details" [completed]="signupForm.valid">
+      <form [formGroup]="signupForm">
+        <mat-form-field appearance="fill"  class="topField">
+          <mat-label>First Name</mat-label>
+          <input matInput formControlName="firstName" name="firstName" placeholder="First Name" required>
+          <mat-error cdkTextareaAutosize *ngIf="signupForm.get('firstName')?.invalid && signupForm.get('firstName')?.touched">
+            First Name is required and should be at least 2 characters long.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Last Name</mat-label>
+          <input matInput formControlName="lastName" name="lastName" placeholder="Last Name" required>
+          <mat-error *ngIf="signupForm.get('lastName')?.invalid && signupForm.get('lastName')?.touched">
+            Last Name is required and should be at least 2 characters long.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" autocomplete="email" type="email" placeholder="Email" required>
+          <mat-error *ngIf="signupForm.get('email')?.invalid && signupForm.get('email')?.touched">
+            Invalid email format.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Password</mat-label>
+          <input matInput
+                 placeholder="Password"
+                 [type]="hidePassword ? 'password' : 'text'"
+                 (keyup)="onPasswordKeyUp($event)"
+                 formControlName="password"
+                 minlength="14"
+                 autocomplete="password"
+                 name="password" required>
+          <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+            <mat-icon>{{hidePassword ? 'visibility' : 'visibility_off'}}</mat-icon>
+          </button>
+          <mat-error  cdkTextareaAutosize *ngIf="signupForm.get('password')?.errors?.required">The password is required</mat-error>
+          <mat-error  cdkTextareaAutosize *ngIf="signupForm.get('password')?.errors?.passwordStrength">Your password must have lower case, uppercase, numeric characters, a special character and a minimum length of 14 characters.</mat-error>
+        </mat-form-field><br>
+
+        <app-pass-widget [password]="signupForm.get('password')?.value"></app-pass-widget><br>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Confirm Password</mat-label>
+          <input matInput
+                 formControlName="confirmPassword"
+                 placeholder="Confirm Password"
+                 name="confirmPaassword"
+                 [type]="hideConfirmPassword ? 'password' : 'text'" autocomplete="new-password" required>
+          <button mat-icon-button matSuffix (click)="hideConfirmPassword = !hideConfirmPassword" type="button">
+            <mat-icon>{{hideConfirmPassword ? 'visibility' : 'visibility_off'}}</mat-icon>
+          </button>
+          <mat-error class="error-message" *ngIf="signupForm.get('confirmPassword')?.errors?.required">Confirm password is required.</mat-error>
+          <mat-error  class="error-message"  *ngIf="signupForm.get('confirmPassword')?.errors?.mismatch">Passwords do not match.</mat-error>
+        </mat-form-field>
+
+        <div class="button-row">
+          <div class="flex-container">
+            <div class="button-container">
+              <button mat-fab extended  (click)="resetControlValues()">
+                <mat-icon class="material-symbols-outlined">restart_alt</mat-icon>
+                Reset
+              </button>
+            </div>
+            <div class="button-container">
+              <button mat-fab extended matStepperNext [disabled]="!signupForm">
+                  <mat-icon class="material-symbols-outlined">arrow_forward</mat-icon>Next</button>
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </mat-step>
+
+    <mat-step label="Address Details">
+      <form [formGroup]="signupFormPart2">
+        <mat-form-field appearance="fill" class="topField">
+          <mat-label>Country</mat-label>
+          <input matInput   formControlName="country" name="country" placeholder="Country">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Province/State</mat-label>
+          <input matInput formControlName="province" name="province" placeholder="State">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Address</mat-label>
+          <input matInput formControlName="address" name="address" placeholder="Address">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <input matInput [matDatepicker]="picker" formControlName="birthDate" name="birthDate" placeholder="Date of birth.">
+          <mat-hint color="">MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-slide-toggle formControlName="subscribe"
+                          name="subscribe">Would you like to subscribe to our newsletter?</mat-slide-toggle><br><br>
+        <div *ngIf="isLoading" class="loading-spinner"><br><br>
+          <mat-spinner></mat-spinner>
+        <br><br></div>
+
+        <div class="button-row" [ngClass]="{'centered': stepper.selectedIndex === 1}">
+          <div class="flex-container">
+            <div class="button-container">
+              <button mat-fab extended (click)="resetControlValues()">
+                <mat-icon class="material-symbols-outlined">restart_alt</mat-icon>
+                Reset
+              </button>
+            </div>
+            <div class="button-container">
+              <button mat-fab extended matStepperPrevious>
+                <mat-icon  class="material-symbols-outlined">arrow_backward</mat-icon>
+              Back
+              </button>
+            </div>
+            <div class="button-container">
+            <button mat-fab extended (click)="onSubmit()" [disabled]="!signupFormPart2.valid">
+                <mat-icon class="material-symbols-outlined" >dataset_linked</mat-icon>Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </mat-step>
+  </mat-horizontal-stepper>
+</mat-card>

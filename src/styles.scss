@@ -1,0 +1,37 @@
+@use '@angular/material' as mat;
+@use '@angular/cdk' as cdk;
+
+@include mat.core();
+
+$my-material-app-theme: mat.define-theme(
+    (
+      color: (
+        theme-type: light,
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+        use-system-variables: true,
+      ),
+      typography: (
+        use-system-variables: true,
+      ),
+      density: (
+        scale: 0,
+      ),
+    )
+);
+
+
+:root {
+  @include mat.all-component-themes($my-material-app-theme);
+  @include mat.system-level-colors($my-material-app-theme);
+  @include mat.system-level-typography($my-material-app-theme);
+  --step0: #ff0000;
+  --step1: #ff9800;
+  --step2: #f8ff36;
+  --step3: #76c7c0;
+  --step4: #4caf50
+}
+
+:root {
+    --hexValue: #ff0000;
+};
