@@ -4,8 +4,16 @@
  * @author Pierre Luc Asselin, on behalf of DevXpress.ca
  */
 
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {Component, OnInit, Input, ViewChild, NgIterable} from '@angular/core';
+import { FormControl,
+  FormGroup,
+  Validators,
+  NgForm,
+  ValidationErrors,
+  Validator,
+  AbstractControl,
+  NG_VALUE_ACCESSOR,
+} from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { Store } from '@ngrx/store';
 import { debounceTime } from 'rxjs';
@@ -15,6 +23,9 @@ import { SignupService } from './reactive-code/signup.service';
 import { SignupForm } from '../models/signup.model';
 import { confirmPasswordValidator, passwordStrengthValidator } from './form-validators';
 import { flushLocalData } from "./reactive-code/signup.actions";
+import data from '../models/data.json';
+import { Countries, Provinces } from '../models/select.selectors';
+
 
 /**
  * @description Component for the signup form with stepper functionality.
@@ -23,9 +34,18 @@ import { flushLocalData } from "./reactive-code/signup.actions";
 @Component({
   selector: 'app-signup-form',
   templateUrl: './signup-form.component.html',
-  styleUrls: ['./signup-form.component.scss']
+  styleUrls: ['./signup-form.component.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      multi: true,
+      useExisting: SignupFormComponent
+    }
+  ]
 })
+
 export class SignupFormComponent implements OnInit {
+
   @ViewChild('stepper') stepper!: MatStepper;
   hidePassword = true;
   hideConfirmPassword = true;
@@ -33,6 +53,10 @@ export class SignupFormComponent implements OnInit {
   signupFormPart2!: FormGroup;
   password: string = '';
   isLoading = false;
+  countries: Countries[] = [];
+  provinces: Provinces[] = [];
+  countrySelected: boolean = false;
+  public provinceControl: FormControl | null = null;
 
   /**
    * @description Constructor for SignupFormComponent.
@@ -42,7 +66,8 @@ export class SignupFormComponent implements OnInit {
   constructor(
     private store: Store<{ signup: SignupState }>,
     private signupService: SignupService,
-  ) {}
+    ) {}
+
 
   /**
    * @description Angular lifecycle hook that runs once the component has been initialized.
@@ -54,7 +79,7 @@ export class SignupFormComponent implements OnInit {
       firstName: new FormControl('', Validators.required),
       lastName: new FormControl('', Validators.required),
       email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [Validators.required, passwordStrengthValidator()]),
+      password: new FormControl('', [Validators.required, Validators.minLength(14), passwordStrengthValidator()]),
       confirmPassword: new FormControl('', Validators.required)
     }, { validators: confirmPasswordValidator });
 
@@ -64,6 +89,13 @@ export class SignupFormComponent implements OnInit {
       address: new FormControl('', Validators.required),
       birthDate: new FormControl('', Validators.required),
       subscribe: new FormControl(false)
+    });
+    this.provinceControl = this.signupFormPart2.get('province') as FormControl;
+    this.provinceControl?.disable();
+    this.countries = this.populateCountries(data);
+
+    this.signupFormPart2.get('country')?.valueChanges.subscribe((country) => {
+      this.onCountryChange(country);
     });
 
     this.signupForm.valueChanges.pipe(debounceTime(500)).subscribe(() => {
@@ -141,6 +173,41 @@ export class SignupFormComponent implements OnInit {
   onPasswordKeyUp(event: KeyboardEvent) {
     this.password = (event.target as HTMLInputElement).value;
     console.log('Password: Key Up Fired');
+  }
+
+  /**
+   * @description Populates the countries array with data from the JSON file.
+   * @param data
+   */
+  populateCountries(data: any): Countries[] {
+    return data.map((countryData: any) => {
+      const provinces: Provinces[] = countryData.provinces.map((provinceData: any) => ({
+        name: provinceData.name,
+        abbreviation: provinceData.abbreviation
+      }));
+
+      return {
+        name: countryData.name,
+        abbreviation: countryData.abbreviation,
+        provinces: provinces
+      };
+    });
+  }
+
+  /**
+   * @description Handles the change event for the country dropdown.
+   * @param country
+   */
+  onCountryChange(country: string): void {
+    const selectedCountry = this.countries.find(c => c.name === country);
+
+    this.provinces = selectedCountry ? selectedCountry.provinces : [];
+    if (selectedCountry) {
+      this.provinceControl?.enable();
+    } else {
+      this.provinceControl?.disable();
+    }
+    this.provinceControl?.setValue(null);
   }
 
   /**

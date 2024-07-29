@@ -13,7 +13,7 @@ export function passwordStrengthValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     const value = control.value;
     if (!value) return null;
-
+    const error = '';
     const hasUpperCase = /[A-Z+]/.test(value);
     const hasSpecialChar = /[@!#$%^&*(),.?":{}|<>]/.test(value);
     const hasLowerCase = /[a-z]+/.test(value);

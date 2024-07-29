@@ -65,24 +65,10 @@ mat-hint {
 }
 
 .error-message {
-  font-size: 14px;
-  color: #f44336;
   margin-top: 4px;
   display: block;
   height: fit-content;
   padding: 4px;
-
-  @media (max-width: 600px) {
-    font-size: 12px;
-  }
-
-  @media (min-width: 601px) and (max-width: 1024px) {
-    font-size: 13px;
-  }
-
-  @media (min-width: 1025px) {
-    font-size: 14px;
-  }
 }
 
 mat-form-field {

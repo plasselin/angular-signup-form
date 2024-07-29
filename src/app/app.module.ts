@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -18,7 +18,6 @@ import { SignupFormComponent } from './signup-form/signup-form.component';
 import { PassWidgetComponent } from './pass-widget/pass-widget.component';
 import { MatProgressBarModule} from "@angular/material/progress-bar";
 import { PasswordStrengthDirective } from "./directives/password-strength.diretive";
-import {HttpClientModule} from "@angular/common/http";
 import {StoreModule} from "@ngrx/store";
 import {EffectsModule} from "@ngrx/effects";
 import {StoreDevtoolsModule} from "@ngrx/store-devtools";
@@ -27,13 +26,16 @@ import {SignupEffects} from "./signup-form/reactive-code/signup.effects";
 import {MatDividerModule} from "@angular/material/divider";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { OnlyOneErrorPipe } from './signup-form/reactive-code/only-one-error.pipe';
+import { StoreRouterConnectingModule } from '@ngrx/router-store'
 
 @NgModule({
   declarations: [
     AppComponent,
     SignupFormComponent,
     PassWidgetComponent,
-    PasswordStrengthDirective
+    PasswordStrengthDirective,
+    OnlyOneErrorPipe
   ],
     imports: [
         BrowserModule,
@@ -53,13 +55,15 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
         MatNativeDateModule,
         AppRoutingModule,
         FormsModule,
-        HttpClientModule,
         StoreModule.forRoot({signup: signupReducer}),
         EffectsModule.forRoot([SignupEffects]),
         StoreDevtoolsModule.instrument({
             maxAge: 25,
         }),
         MatProgressSpinner,
+        StoreRouterConnectingModule.forRoot(),
+        StoreModule.forRoot({}, {}),
+        StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     ],
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { subscriptSizing: 'dynamic' } }  /* Resizes the mat-error field to fit the error message */

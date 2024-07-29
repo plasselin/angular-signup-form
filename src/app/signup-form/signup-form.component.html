@@ -1,6 +1,6 @@
 <mat-card>
 
-  <mat-horizontal-stepper [linear]="true" #stepper>
+    <mat-horizontal-stepper [linear]="true" #stepper>
     <mat-step label="Personal Details" [completed]="signupForm.valid">
       <form [formGroup]="signupForm">
         <mat-form-field appearance="fill"  class="topField">
@@ -36,12 +36,16 @@
                  formControlName="password"
                  minlength="14"
                  autocomplete="password"
-                 name="password" required>
+                 name="password" required [minLength]="14">
+
           <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
             <mat-icon>{{hidePassword ? 'visibility' : 'visibility_off'}}</mat-icon>
           </button>
-          <mat-error  cdkTextareaAutosize *ngIf="signupForm.get('password')?.errors?.required">The password is required</mat-error>
-          <mat-error  cdkTextareaAutosize *ngIf="signupForm.get('password')?.errors?.passwordStrength">Your password must have lower case, uppercase, numeric characters, a special character and a minimum length of 14 characters.</mat-error>
+
+          <mat-error  cdkTextareaAutosize *ngIf="signupForm.get('password')?.errors?.required && this.stepper.next">The password is required.</mat-error>
+          <mat-error  cdkTextareaAutosize *ngIf="(signupForm.get('password')?.errors?.minlength) && !(signupForm.get('password')?.errors?.required)" >The password must have at least 14 characters.</mat-error>
+          <mat-error  cdkTextareaAutosize *ngIf="(signupForm.get('password')?.errors?.passwordStrength) && !(signupForm.get('password')?.errors?.minlength) && !(signupForm.get('password')?.errors?.required)">Your password must have lower case an uppercase a numeric characters and a special character.</mat-error>
+
         </mat-form-field><br>
 
         <app-pass-widget [password]="signupForm.get('password')?.value"></app-pass-widget><br>
@@ -80,14 +84,19 @@
 
     <mat-step label="Address Details">
       <form [formGroup]="signupFormPart2">
-        <mat-form-field appearance="fill" class="topField">
-          <mat-label>Country</mat-label>
-          <input matInput   formControlName="country" name="country" placeholder="Country">
-        </mat-form-field>
 
-        <mat-form-field appearance="fill">
+          <mat-form-field>
+            <mat-label>Country</mat-label>
+            <mat-select formControlName="country" name="country" placeholder="Country" required>
+              <mat-option *ngFor="let country of countries" [value]="country.name">{{ country.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+        <mat-form-field>
           <mat-label>Province/State</mat-label>
-          <input matInput formControlName="province" name="province" placeholder="State">
+          <mat-select formControlName="province" name="province" placeholder="State" required>
+            <mat-option *ngFor="let province of provinces" [value]="province.name">{{ province.name }}</mat-option>
+          </mat-select>
         </mat-form-field>
 
         <mat-form-field appearance="fill">
